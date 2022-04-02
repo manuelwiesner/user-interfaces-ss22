@@ -1,1 +1,1 @@
-rootProject.name = "user-interfaces-ss21"
+rootProject.name = "user-interfaces-ss22"

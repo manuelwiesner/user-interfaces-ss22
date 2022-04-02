@@ -29,5 +29,5 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 }
 
 application {
-    mainClass.set("at.tugraz.user_interfaces_ss21.TestKt")
+    mainClass.set("at.tugraz.user_interfaces_ss22.TestKt")
 }
