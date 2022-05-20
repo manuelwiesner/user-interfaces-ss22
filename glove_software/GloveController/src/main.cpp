@@ -1,25 +1,33 @@
 #include <Arduino.h>
 #include <WiFi.h>
 
-const char* SSID = "";
-const char* password = "";
+const char* SSID = "GloveController";
+const char* password = "eqis7nSI";
 
-const char* host = "";
-const uint16_t port = 8080;
+WiFiServer server(80);
 
 void setup() 
 {
   // setup sequence
   Serial.begin(115200);
-  WiFi.begin(SSID, password);
+  WiFi.softAP(SSID, password);
 
-  while(WiFi.status() != WL_CONNECTED)
-  {
-    
-  }
+  IPAddress IP = WiFi.softAPIP();
+  Serial.print("IP Address: ");
+  Serial.println(IP);
+
+  server.begin();
+
 }
 
 void loop() 
 {
+  WiFiClient client = server.available();
+  while(client.connected())
+  {
+    Serial.println("reeeeee");
+  }
 
+  client.stop();
+  Serial.println("Client disconnected.");
 }
