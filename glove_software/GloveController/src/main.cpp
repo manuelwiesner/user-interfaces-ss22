@@ -17,7 +17,7 @@ void setup()
   Serial.println(IP);
 
   server.begin();
-
+  delay(10000);
 }
 
 void loop() 
