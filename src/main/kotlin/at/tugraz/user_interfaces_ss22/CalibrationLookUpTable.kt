@@ -12,5 +12,6 @@ interface CalibrationLookUpTable {
     fun updateTable(calibrationInputDataPoints: List<Int>)
 
     /** Applies the stored function/LUT to the input. */
+    @Throws(IndexOutOfBoundsException::class)
     fun mapInput(input: Int): Int
 }
