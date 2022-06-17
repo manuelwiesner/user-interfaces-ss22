@@ -1,5 +1,6 @@
 package at.tugraz.user_interfaces_ss22.mapping;
 
+import at.tugraz.user_interfaces_ss22.glove.GlovePacket;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class AxisCalibrationLookUpTable implements CalibrationLookUpTable {
     }
 
     @Override
-    public int mapInput(short input) throws IndexOutOfBoundsException {
+    public int mapInput(@NotNull GlovePacket packet, short input) throws IndexOutOfBoundsException {
         // TODO: retrieve mapping/function and return calibrated value
         //  Is the function linear? If so, maybe store an array with 4096 values and input==index to look it up?
         return input;

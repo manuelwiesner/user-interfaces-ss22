@@ -42,9 +42,4 @@ data class GlovePacket(
             }
         }
     }
-
-    fun jump(): Boolean {
-        // TODO better detection
-        return this.accX + this.accY + this.accZ >= 6144
-    }
 }
