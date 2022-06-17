@@ -1,4 +1,4 @@
-package at.tugraz.user_interfaces_ss22
+package at.tugraz.user_interfaces_ss22.mapping
 
 import kotlin.random.Random
 
@@ -11,7 +11,7 @@ abstract class CalibrationLookUpTableTest(private val factory: () -> Calibration
     protected open val maxData: Int = 4095
 
     /** Num of samples per seconds that should be generated */
-    protected open val readingsPerSecond: Int = 100
+    protected open val readingsPerSecond: Int = 120
 
     /** Duration of the sequence in seconds */
     protected open val durationInSeconds: Double = 2.5

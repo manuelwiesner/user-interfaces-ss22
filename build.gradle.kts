@@ -16,8 +16,27 @@ repositories {
     mavenCentral()
 }
 
+val dllDirectory = "build/dll"
+
 dependencies {
+    // rocket league bot framework
+    implementation("org.rlbot.commons:framework:2.1.0")
+    runtimeOnly(files(dllDirectory))
+
+    // enables our application to listen to global key events for testing
+    implementation("com.github.kwhat:jnativehook:2.2.2")
+
+    // logging and testing
+    implementation("ch.qos.logback:logback-classic:1.2.11")
     testImplementation(kotlin("test"))
+}
+
+tasks.create("createDllDirectory") {
+    mkdir(dllDirectory)
+}
+
+tasks.withType<JavaExec> {
+    dependsOn("createDllDirectory")
 }
 
 tasks.test {
@@ -29,5 +48,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 }
 
 application {
-    mainClass.set("at.tugraz.user_interfaces_ss22.TestKt")
+    applicationDistribution.exclude(dllDirectory)
+    applicationDefaultJvmArgs = listOf("-Djna.library.path=$dllDirectory")
+    mainClass.set("at.tugraz.user_interfaces_ss22.MainKt")
 }

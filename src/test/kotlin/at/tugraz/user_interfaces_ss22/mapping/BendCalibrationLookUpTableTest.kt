@@ -1,4 +1,4 @@
-package at.tugraz.user_interfaces_ss22
+package at.tugraz.user_interfaces_ss22.mapping
 
 import org.junit.jupiter.api.*
 import kotlin.test.assertEquals
@@ -41,7 +41,19 @@ class BendCalibrationLookUpTableTest : CalibrationLookUpTableTest({ BendCalibrat
         generateRandomData(
             listOf(
                 DataSpec(0, this.maxData / 2, this.numReadingsSequence.div(5)),
-                DataSpec(this.maxData / 2, 0, this.numReadingsSequence),
+                DataSpec(this.maxData / 2, 0, this.numReadingsSequence, true),
+            )
+        )
+    )
+
+    @Test
+    fun testDipSequence() = createAndAssertLUT(
+        generateRandomData(
+            listOf(
+                DataSpec(0, this.maxData / 2, this.numReadingsSequence.div(4)),
+                DataSpec(this.maxData / 2, this.maxData / 2 - 10, this.numReadingsSequence.div(16), true),
+                DataSpec(this.maxData / 2, this.maxData, this.numReadingsSequence.div(4)),
+                DataSpec(this.maxData, 0, this.numReadingsSequence.div(2), true),
             )
         )
     )
@@ -56,7 +68,7 @@ class BendCalibrationLookUpTableTest : CalibrationLookUpTableTest({ BendCalibrat
 
         for (i in 0..maxData) {
             // get next mapping
-            val nextValue = mapInput(i)
+            val nextValue = mapInput(i.toShort())
             // if peak is reached we should only get the max value above that
             if (i >= peakSample) assertEquals(this@BendCalibrationLookUpTableTest.maxData, nextValue)
             // next value should probably be >= than the last?
@@ -65,6 +77,6 @@ class BendCalibrationLookUpTableTest : CalibrationLookUpTableTest({ BendCalibrat
         }
 
         // input can't be greater than max
-        assertThrows<IndexOutOfBoundsException> { mapInput(maxData + 1) }
+        assertThrows<IndexOutOfBoundsException> { mapInput((maxData + 1).toShort()) }
     }
 }

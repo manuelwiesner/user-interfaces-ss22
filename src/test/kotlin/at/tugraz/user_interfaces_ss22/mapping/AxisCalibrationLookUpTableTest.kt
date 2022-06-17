@@ -1,4 +1,4 @@
-package at.tugraz.user_interfaces_ss22
+package at.tugraz.user_interfaces_ss22.mapping
 
 import org.junit.jupiter.api.*
 
