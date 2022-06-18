@@ -4,7 +4,7 @@ import at.tugraz.user_interfaces_ss22.BaseService
 import java.net.ServerSocket
 
 /** Handles the socket connection to the glove, can read [GlovePacket] packets. */
-class GloveControllerInterface(
+class GloveControllerService(
     private val port: Int,
 ) : GloveController, BaseService() {
 
