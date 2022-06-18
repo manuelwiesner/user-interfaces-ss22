@@ -1,5 +1,6 @@
 package at.tugraz.user_interfaces_ss22.mapping
 
+import at.tugraz.user_interfaces_ss22.glove.GlovePacket
 import org.junit.jupiter.api.*
 import kotlin.test.assertEquals
 
@@ -60,7 +61,7 @@ class BendCalibrationLookUpTableTest : CalibrationLookUpTableTest({ BendCalibrat
 
     override fun CalibrationLookUpTable.assertLUT(sampleData: List<Int>) {
         // input can't be negative
-        assertThrows<IndexOutOfBoundsException> { mapInput(-1) }
+        assertThrows<IndexOutOfBoundsException> { mapInput(GlovePacket.EMPTY_PACKET, -1) }
 
         // max read/generated sample
         val peakSample = sampleData.maxOrNull() ?: 0
@@ -68,7 +69,7 @@ class BendCalibrationLookUpTableTest : CalibrationLookUpTableTest({ BendCalibrat
 
         for (i in 0..maxData) {
             // get next mapping
-            val nextValue = mapInput(i.toShort())
+            val nextValue = mapInput(GlovePacket.EMPTY_PACKET, i.toShort())
             // if peak is reached we should only get the max value above that
             if (i >= peakSample) assertEquals(this@BendCalibrationLookUpTableTest.maxData, nextValue)
             // next value should probably be >= than the last?
@@ -77,6 +78,6 @@ class BendCalibrationLookUpTableTest : CalibrationLookUpTableTest({ BendCalibrat
         }
 
         // input can't be greater than max
-        assertThrows<IndexOutOfBoundsException> { mapInput((maxData + 1).toShort()) }
+        assertThrows<IndexOutOfBoundsException> { mapInput(GlovePacket.EMPTY_PACKET, (maxData + 1).toShort()) }
     }
 }

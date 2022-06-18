@@ -1,5 +1,6 @@
 package at.tugraz.user_interfaces_ss22.glove
 
+import at.tugraz.user_interfaces_ss22.BaseService
 import com.github.kwhat.jnativehook.GlobalScreen
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
@@ -7,7 +8,7 @@ import com.github.kwhat.jnativehook.mouse.NativeMouseEvent
 import com.github.kwhat.jnativehook.mouse.NativeMouseListener
 
 /** Keyboard and mouse input acting as glove input for testing the bot without the glove hardware. */
-class GloveControllerKeyAndMouse : GloveController {
+class FakeGloveController : GloveController, BaseService() {
 
     private val wKey = GloveKeyListener(NativeKeyEvent.VC_W)
     private val sKey = GloveKeyListener(NativeKeyEvent.VC_S)
@@ -39,15 +40,15 @@ class GloveControllerKeyAndMouse : GloveController {
             0,
         )
 
-    init {
+    override fun startService() {
         GlobalScreen.registerNativeHook()
-        listOf(wKey, sKey, aKey, dKey, qKey, eKey, shiftKey)
-            .forEach { GlobalScreen.addNativeKeyListener(it) }
-        listOf(leftMouse, rightMouse)
-            .forEach { GlobalScreen.addNativeMouseListener(it) }
+        listOf(wKey, sKey, aKey, dKey, qKey, eKey, shiftKey).forEach { GlobalScreen.addNativeKeyListener(it) }
+        listOf(leftMouse, rightMouse).forEach { GlobalScreen.addNativeMouseListener(it) }
     }
 
-    override fun close() {
+    override fun stopService() {
+        listOf(wKey, sKey, aKey, dKey, qKey, eKey, shiftKey).forEach { GlobalScreen.removeNativeKeyListener(it) }
+        listOf(leftMouse, rightMouse).forEach { GlobalScreen.removeNativeMouseListener(it) }
         GlobalScreen.unregisterNativeHook()
     }
 

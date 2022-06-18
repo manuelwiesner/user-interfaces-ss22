@@ -1,5 +1,6 @@
 package at.tugraz.user_interfaces_ss22.mapping;
 
+import at.tugraz.user_interfaces_ss22.glove.GlovePacket;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
