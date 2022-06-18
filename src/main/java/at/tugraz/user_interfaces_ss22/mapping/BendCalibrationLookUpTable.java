@@ -43,7 +43,7 @@ public class BendCalibrationLookUpTable implements CalibrationLookUpTable {
     }
 
     @Override
-    public int mapInput(short input) throws IndexOutOfBoundsException {
+    public int mapInput(@NotNull GlovePacket packet, short input) throws IndexOutOfBoundsException {
 
         if (input < 0) throw new IndexOutOfBoundsException();
         if (input > 4095) throw new IndexOutOfBoundsException();
