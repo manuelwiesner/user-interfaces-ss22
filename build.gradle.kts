@@ -39,6 +39,10 @@ tasks.withType<JavaExec> {
     dependsOn("createDllDirectory")
 }
 
+sourceSets.main {
+    resources.exclude("__pycache__")
+}
+
 tasks.test {
     useJUnitPlatform()
 }

@@ -11,7 +11,7 @@ import java.net.ServerSocket
 import java.util.concurrent.atomic.AtomicBoolean
 
 /** Listens for incoming requests from the rlbot python framework and initializes bots if requested. */
-class RLBotPythonInterface(
+class RLBotPythonService(
     private val port: Int,
     refreshRate: Int,
     private val gloveStateProvider: (Int) -> ControllerState,
