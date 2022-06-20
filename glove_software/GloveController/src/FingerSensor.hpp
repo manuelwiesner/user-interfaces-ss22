@@ -19,6 +19,8 @@ public:
     FingerSensor(uint8_t pin, uint16_t dividend, uint16_t divisor);
     ~FingerSensor();
     uint16_t getFilteredValue();
+    uint16_t getRawValue();
+    uint8_t get8BitFilteredValue();
 };
 
 #endif

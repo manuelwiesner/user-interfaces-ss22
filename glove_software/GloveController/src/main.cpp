@@ -1,4 +1,7 @@
-#include "SensorValues.hpp"
+#include <Wifi.h>
+#include "FingerSensor.hpp"
+//#include "PositionSensors.hpp"
+#include "MPU6050_Custom.hpp"
 
 #define I2C_SDA 5
 #define I2C_SCL 18
@@ -8,50 +11,11 @@ const char* password = "eqis7nSI";
 const char* host = "192.168.4.2";
 const uint16_t port = 8080;
 
-
-//const int SCLPin = 18;
-//const int SDAPin = 15;
-
 // just for testing
-const uint8_t magicByte = 66;
-
-//const uint16_t fingerOne = 999;
-//const uint16_t fingerTwo = 1000;
-//const uint16_t fingerThree = 1001;
-//const uint16_t fingerFour = 1002;
-//const uint16_t fingerFive = 1003;
-const uint16_t axisX = 1004;
-const uint16_t axisY = 1005;
-const uint16_t axisZ = 1006;
-/*
-const uint8_t buffer[18] = {
-  magicByte,
-  fingerOne >> 8,
-  fingerOne & 0xFF,
-  fingerTwo >> 8,
-  fingerTwo & 0xFF,
-  fingerThree >> 8,
-  fingerThree & 0xFF,
-  fingerFour >> 8,
-  fingerFour & 0xFF,
-  fingerFive >> 8,
-  fingerFive & 0xFF,
-  axisX >> 8,
-  axisX & 0xFF,
-  axisY >> 8,
-  axisY & 0xFF,
-  axisZ >> 8,
-  axisZ & 0xFF,
-  magicByte
-};
-*/
-
-
-
-
-TwoWire i2c = TwoWire(0);
+const uint8_t magicByte = 42;
 WiFiServer server(80);
-Adafruit_MPU6050 gyro;
+TwoWire I2C_Bus_ = TwoWire(0);
+MPU6050_Custom mpu6050_;
 
 
 void setup() 
@@ -59,82 +23,95 @@ void setup()
   // setup sequence
   Serial.begin(115200);
   WiFi.softAP(SSID, password);
-  i2c.begin(I2C_SDA,I2C_SCL, (uint32_t)100000);
-
+  I2C_Bus_.begin(I2C_SDA, I2C_SCL, (uint32_t)100000);
   IPAddress IP = WiFi.softAPIP();
+
+  if(!mpu6050_.begin((uint8_t)104U, &I2C_Bus_))
+    {
+        Serial.println("Failed to find MPU6050 chip :(");
+        while (1) { delay(10);}
+    }
+
   Serial.print("IP Address: ");
   Serial.println(IP);
-/*
-  if (!gyro.begin((uint8_t)104U, &i2c)) 
-  {
-		Serial.println("Failed to find MPU6050 chip");
-		while (1) 
-    {
-		  delay(10);
-		}
-	}
-	Serial.println("MPU6050 Found!");
-*/
   server.begin();
-  delay(10000);
+  delay(1000);
 }
 
 
 
 void loop() 
 {
-  SensorValues* values_ =  new SensorValues(36,33,39,32,34);
-  WiFiClient client = server.available();
+    WiFiClient client = server.available();
+    FingerSensor thumb = FingerSensor(34, 1, 10);
+    FingerSensor indexFinger = FingerSensor(32, 1, 10);
+    FingerSensor middleFinger = FingerSensor(39, 1, 10);
+    FingerSensor ringFinger = FingerSensor(33, 1, 10);
+    FingerSensor pinky = FingerSensor(36, 1, 10);
 
-  FingerSensor indexFinger = FingerSensor(32, 5, 10);
-  while(true)
-  {
-    Serial.println(indexFinger.getFilteredValue());
-  }
-  
-  /*
-  while(client.connected())
-  {
-    
-    Serial.println("reeeeee");
+    uint8_t packet_id = 0;
+    uint8_t dummy1 = 0;
+    uint8_t dummy2 = 0;
+    uint8_t dummy3 = 0;
 
-    indexValue = analogRead(34);
-    Serial.print(indexValue);
-    indexValue1 = analogRead(32);
-    Serial.print(indexValue1);
-    indexValue2 = analogRead(39);
-    Serial.print(indexValue2);
-    indexValue3 = analogRead(33);
-    Serial.print(indexValue3);
-    indexValue4 = analogRead(36);
-    Serial.println(indexValue4);
 
-    
-  }
-  */
-  if (!client.connect(host, port)) {
- 
+
+    if (!client.connect(host, port)) 
+    {
         Serial.println("Connection to host failed");
-
-        delete values_;
         delay(100);
         return;
     }
- 
     Serial.println("Connected to server successful!");
 
-
-    while (client.availableForWrite()) 
+    while(client.availableForWrite())
     {
-      //client.write(buffer, 18);
-      client.flush();
+        if(packet_id < 255)
+        packet_id++;
+        else
+        packet_id = 0;
+
+        mpu6050_.readRawValues();
+
+        uint8_t buffer[32]
+        {
+            magicByte,
+            packet_id,
+            indexFinger.getFilteredValue() >> 8,
+            indexFinger.getFilteredValue() & 0xFF,
+            middleFinger.getFilteredValue() >> 8,
+            middleFinger.getFilteredValue() & 0xFF,
+            ringFinger.getFilteredValue() >> 8,
+            ringFinger.getFilteredValue() & 0xFF,
+            pinky.getFilteredValue() >> 8,
+            pinky.getFilteredValue() & 0xFF,
+            thumb.getFilteredValue() >> 8,
+            thumb.getFilteredValue() & 0xFF,
+            mpu6050_.getRawAccX_0(),
+            mpu6050_.getRawAccX_1(),
+            mpu6050_.getRawAccY_0(),
+            mpu6050_.getRawAccY_1(),
+            mpu6050_.getRawAccZ_0(),
+            mpu6050_.getRawAccZ_1(),
+            mpu6050_.getRawGyroX_0(),
+            mpu6050_.getRawGyroX_1(),
+            mpu6050_.getRawGyroY_0(),
+            mpu6050_.getRawGyroY_1(),
+            mpu6050_.getRawGyroZ_0(),
+            mpu6050_.getRawGyroZ_1(),
+            (mpu6050_.getTime() >> 24) & 0xFF,
+            (mpu6050_.getTime() >> 16) & 0xFF,
+            (mpu6050_.getTime() >> 8) & 0xFF,
+            mpu6050_.getTime() & 0xFF,
+            dummy1,
+            dummy2, 
+            dummy3,
+            magicByte,
+        };
+        client.write(buffer, 32);
+        client.flush();
     }
-
-
+  
     Serial.println("Disconnecting...");
     client.stop();
-    
-    delete values_;
-    delay(1000);
-  //client.stop();
 }

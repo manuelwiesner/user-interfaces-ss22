@@ -21,5 +21,10 @@ uint16_t FingerSensor::getFilteredValue()
     return filteredValue;
 }
 
+uint16_t FingerSensor::getRawValue()
+{
+    return rawValue;
+}
+
 
 FingerSensor::~FingerSensor() = default;
