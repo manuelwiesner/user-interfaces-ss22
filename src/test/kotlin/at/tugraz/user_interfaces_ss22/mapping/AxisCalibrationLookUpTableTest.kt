@@ -2,7 +2,7 @@ package at.tugraz.user_interfaces_ss22.mapping
 
 import org.junit.jupiter.api.*
 
-class AxisCalibrationLookUpTableTest : CalibrationLookUpTableTest({ AxisCalibrationLookUpTable() }) {
+class AxisAccCalibrationLookUpTableTest : CalibrationLookUpTableTest({ AxisAccCalibrationLookUpTable() }) {
 
     @Test
     fun testNormalSequence() = createAndAssertLUT(

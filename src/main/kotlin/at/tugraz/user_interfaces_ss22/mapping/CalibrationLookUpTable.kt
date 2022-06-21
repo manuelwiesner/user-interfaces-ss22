@@ -4,7 +4,7 @@ import at.tugraz.user_interfaces_ss22.glove.GlovePacket
 
 /**
  * Used to build a function or LUT from sample data, so it can be used to map/calibrate input later.
- * @see AxisCalibrationLookUpTable
+ * @see AxisAccCalibrationLookUpTable
  * @see BendCalibrationLookUpTable
  */
 interface CalibrationLookUpTable {

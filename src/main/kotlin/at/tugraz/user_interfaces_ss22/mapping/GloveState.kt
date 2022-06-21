@@ -15,17 +15,14 @@ class GloveState(
     private val fingerFour = BendCalibrationLookUpTable()
     private val fingerFive = BendCalibrationLookUpTable()
 
-    private val gyroX = AxisCalibrationLookUpTable()
-    private val gyroY = AxisCalibrationLookUpTable()
-    private val gyroZ = AxisCalibrationLookUpTable()
-
-    private val accX = AccCalibrationLookUpTable()
-    private val accY = AccCalibrationLookUpTable()
-    private val accZ = AccCalibrationLookUpTable()
+    private val axisAcc = AxisAccCalibrationLookUpTable()
 
     // --------------------------------------------------------
 
     private var latestState: GlovePacket = this.gloveController.state
+
+    //TODO: use AxisAcc updateData function after every new glove packet
+
 
     override fun getThrottle(): Float {
         this.latestState = this.gloveController.state
@@ -34,16 +31,15 @@ class GloveState(
         return (positive - negative) / 4095f
     }
 
-    override fun getSteer(): Float = this.gyroY.mapInputFloat(this.latestState.gyroY)
-    override fun getPitch(): Float = this.gyroX.mapInputFloat(this.latestState.gyroX)
-    override fun getYaw(): Float = this.gyroY.mapInputFloat(this.latestState.gyroY)
-    override fun getRoll(): Float = this.gyroZ.mapInputFloat(this.latestState.gyroZ)
+    override fun getSteer(): Float = axisAcc.angleY
+    override fun getPitch(): Float = axisAcc.angleX
+    override fun getYaw(): Float = axisAcc.angleY
+    override fun getRoll(): Float = axisAcc.angleZ
 
     override fun holdJump(): Boolean {
-        val valueAccX = this.accX.mapInput(this.latestState, this.latestState.accX)
-        val valueAccY = this.accY.mapInput(this.latestState, this.latestState.accY)
-        val valueAccZ = this.accZ.mapInput(this.latestState, this.latestState.accZ)
-        return valueAccX + valueAccY + valueAccZ >= 6144
+        val valueAccX = axisAcc.angleAccX
+        val valueAccY = axisAcc.angleAccY
+        return valueAccX + valueAccY >= 6144 //TODO: still right value?
     }
 
     override fun holdBoost(): Boolean = this.fingerTwo.mapInputBoolean(this.latestState.fingerTwo)

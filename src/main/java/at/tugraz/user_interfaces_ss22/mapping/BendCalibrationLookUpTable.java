@@ -1,5 +1,6 @@
 package at.tugraz.user_interfaces_ss22.mapping;
 
+import at.tugraz.user_interfaces_ss22.glove.GlovePacket;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -25,23 +26,24 @@ public class BendCalibrationLookUpTable implements CalibrationLookUpTable {
             this.maxInput = Math.max(currentInput, this.maxInput);
             this.minInput = Math.min(currentInput, this.minInput);
         }
+        //TODO: maybe add a buffer-zone here (at least raise minInput a little) ?
 
         double slope = 4095.0 / (this.maxInput - this.minInput);
 
-        for (int i = 0; i < lut.length; i++){ //TODO: maybe add a buffer-zone here
+        for (int i = 0; i < lut.length; i++){
             if(i <= this.minInput){
-                lut[i] = 0;
+                this.lut[i] = 0;
             }
             else if(i >= this.maxInput){
-                lut[i] = 4095;
+                this.lut[i] = 4095;
             }
             else{
-                lut[i] = (int) (slope * (i - this.minInput));
+                this.lut[i] = (int) (slope * (i - this.minInput));
             }
         }
     }
 
-    @Override
+
     public int mapInput(@NotNull GlovePacket packet, short input) throws IndexOutOfBoundsException {
 
         if (input < 0) throw new IndexOutOfBoundsException();
