@@ -1,7 +1,8 @@
 # include "MPU6050_Custom.hpp"
 
 
-bool MPU6050_Custom::begin(uint8_t i2c_address, TwoWire *wire, int32_t sensor_id) 
+bool MPU6050_Custom::begin(uint8_t i2c_address, TwoWire *wire, int32_t sensor_id, uint8_t sample_rate_divisor, 
+                            mpu6050_bandwidth_t bandwidth, mpu6050_gyro_range_t gyro_range, mpu6050_accel_range_t acc_range) 
 {
   if (i2c_dev)
   {
@@ -23,8 +24,52 @@ bool MPU6050_Custom::begin(uint8_t i2c_address, TwoWire *wire, int32_t sensor_id
     return false;
   }
 
+  setSampleRateDivisor(sample_rate_divisor);
+  setFilterBandwidth(bandwidth);
+  setGyroRange(gyro_range);
+  setAccelerometerRange(acc_range);
+
+  Adafruit_BusIO_Register power_mgmt_1 = Adafruit_BusIO_Register(i2c_dev, MPU6050_PWR_MGMT_1, 1);
+  power_mgmt_1.write(0x01);
+
   return true;
 }
+
+
+void MPU6050_Custom::setSampleRateDivisor(uint8_t divisor) 
+{
+  Adafruit_BusIO_Register sample_rate_div = Adafruit_BusIO_Register(i2c_dev, MPU6050_SMPLRT_DIV, 1);
+
+  sample_rate_div.write(divisor);
+}
+
+
+void MPU6050_Custom::setFilterBandwidth(mpu6050_bandwidth_t bandwidth) 
+{
+  Adafruit_BusIO_Register config = Adafruit_BusIO_Register(i2c_dev, MPU6050_CONFIG, 1);
+  Adafruit_BusIO_RegisterBits filter_config = Adafruit_BusIO_RegisterBits(&config, 3, 0);
+
+  filter_config.write(bandwidth);
+}
+
+
+void MPU6050_Custom::setGyroRange(mpu6050_gyro_range_t new_range) 
+{
+  Adafruit_BusIO_Register gyro_config = Adafruit_BusIO_Register(i2c_dev, MPU6050_GYRO_CONFIG, 1);
+  Adafruit_BusIO_RegisterBits gyro_range = Adafruit_BusIO_RegisterBits(&gyro_config, 2, 3);
+
+  gyro_range.write(new_range);
+}
+
+
+void MPU6050_Custom::setAccelerometerRange(mpu6050_accel_range_t new_range) 
+{
+  Adafruit_BusIO_Register accel_config = Adafruit_BusIO_Register(i2c_dev, MPU6050_ACCEL_CONFIG, 1);
+  Adafruit_BusIO_RegisterBits accel_range = Adafruit_BusIO_RegisterBits(&accel_config, 2, 3);
+
+  accel_range.write(new_range);
+}
+
 
 void MPU6050_Custom::readRawValues(void)
 {

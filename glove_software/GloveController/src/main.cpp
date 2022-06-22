@@ -1,6 +1,5 @@
 #include <Wifi.h>
 #include "FingerSensor.hpp"
-//#include "PositionSensors.hpp"
 #include "MPU6050_Custom.hpp"
 
 #define I2C_SDA 5
@@ -29,15 +28,15 @@ void setup()
   if(!mpu6050_.begin((uint8_t)104U, &I2C_Bus_))
     {
         Serial.println("Failed to find MPU6050 chip :(");
-        while (1) { delay(10);}
+        while (1) { delay(10); }
     }
+  Serial.println("MPU6050 connected and configured :)");  
 
   Serial.print("IP Address: ");
   Serial.println(IP);
   server.begin();
   delay(1000);
 }
-
 
 
 void loop() 
@@ -54,22 +53,20 @@ void loop()
     uint8_t dummy2 = 0;
     uint8_t dummy3 = 0;
 
-
-
     if (!client.connect(host, port)) 
     {
         Serial.println("Connection to host failed");
         delay(100);
         return;
     }
-    Serial.println("Connected to server successful!");
+    Serial.println("Successfully connected to server!");
 
     while(client.availableForWrite())
     {
         if(packet_id < 255)
-        packet_id++;
+            packet_id++;
         else
-        packet_id = 0;
+            packet_id = 0;
 
         mpu6050_.readRawValues();
 
@@ -77,7 +74,7 @@ void loop()
         {
             magicByte,
             packet_id,
-            indexFinger.getFilteredValue() >> 8,
+            indexFinger.getFilteredValue() >>  8,
             indexFinger.getFilteredValue() & 0xFF,
             middleFinger.getFilteredValue() >> 8,
             middleFinger.getFilteredValue() & 0xFF,
@@ -108,6 +105,7 @@ void loop()
             dummy3,
             magicByte,
         };
+
         client.write(buffer, 32);
         client.flush();
     }
