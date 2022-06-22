@@ -58,7 +58,7 @@ public class AxisAccCalibrationLookUpTable implements CalibrationLookUpTable {
         int signZ = (int) Math.signum(accZ_processed);
 
         angleAccX = (float) Math.atan2(accY_processed, signZ * Math.sqrt(accZ_processed * accZ_processed + accX_processed * accX_processed) * 57.29578F);
-        angleAccY = (float) Math.atan2(accX_processed, signZ * Math.sqrt(accZ_processed * accZ_processed + accY_processed * accY_processed) * 57.29578F);
+        angleAccY = (float) -Math.atan2(accX_processed, signZ * Math.sqrt(accZ_processed * accZ_processed + accY_processed * accY_processed) * 57.29578F);
 
         float dt = (timeConstant - lastTimeConstant) * 0.001F;
         lastTimeConstant = timeConstant;
