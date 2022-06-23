@@ -2,3 +2,5 @@
 .gradle
 build
 out
+
+glove_software/GloveController/.vscode/
