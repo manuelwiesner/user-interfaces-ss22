@@ -25,12 +25,39 @@ public class AxisAccCalibrationLookUpTable implements CalibrationLookUpTable {
     float angleY = 0;
     float angleZ = 0;
 
-
     @Override
-    public void updateTable(@NotNull List<Integer> calibrationInputDataPoints) {
-
-        //TODO: calculate offset
+    public void updateTable(@NotNull List<Integer> calibrationInputDataPoints){
+        //TODO: not needed anymore
     }
+
+
+    public void calibrateOffset(@NotNull GlovePacket [] InputData) {
+        //TODO: is InputData given as parameter like this or not?
+
+        float accXTemp = 0;
+        float accYTemp = 0;
+        float accZTemp = 0;
+        float gyroXTemp = 0;
+        float gyroYTemp = 0;
+        float gyroZTemp = 0;
+
+        for (GlovePacket packet : InputData) {
+            accXTemp += (packet.getAccX() / accConstant);
+            accYTemp += (packet.getAccY() / accConstant);
+            accZTemp += (packet.getAccZ() / accConstant);
+            gyroXTemp += (packet.getGyroX() / gyroConstant);
+            gyroYTemp += (packet.getGyroY() / gyroConstant);
+            gyroZTemp += (packet.getGyroZ() / gyroConstant);
+        }
+
+        accXoffset = accXTemp / InputData.length;
+        accYoffset = accYTemp / InputData.length;
+        accZoffset = accZTemp / InputData.length;
+        gyroXoffset = gyroXTemp / InputData.length;
+        gyroYoffset = gyroYTemp / InputData.length;
+        gyroZoffset = gyroZTemp / InputData.length;
+    }
+
     @Override
     public int mapInput(@NotNull GlovePacket packet, short input) throws IndexOutOfBoundsException {
         //TODO: not needed anymore
