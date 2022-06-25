@@ -24,6 +24,7 @@ class FakeGloveController : GloveController, BaseService() {
     private var packetId: Byte = 0
 
     override val state: GlovePacket
+        // TODO: This controller is not up to date with the new angle calculations and will not work
         get() = GlovePacket(
             this.packetId++,
             if (wKey.isDown) 4095 else 0, // getThrottle positive

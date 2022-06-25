@@ -21,6 +21,7 @@ val dllDirectory = "build/dll"
 dependencies {
     // rocket league bot framework
     implementation("org.rlbot.commons:framework:2.1.0")
+    implementation("com.github.davidmoten:flatbuffers-java:1.9.0.1")
     runtimeOnly(files(dllDirectory))
 
     // enables our application to listen to global key events for testing

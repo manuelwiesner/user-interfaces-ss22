@@ -39,32 +39,32 @@ public class AxisAccCalibrationLookUpTable implements CalibrationLookUpTable {
 
     public void updateData(@NotNull GlovePacket packet) throws IndexOutOfBoundsException {
 
-        float accX = packet.getAccX();
-        float accY = packet.getAccY();
-        float accZ = packet.getAccZ();
-        float gyroX = packet.getGyroX();
-        float gyroY = packet.getGyroY();
-        float gyroZ = packet.getGyroZ();
-        float timeConstant = packet.getTimeConstant();
-
-        float accX_processed = (accX / accConstant) - accXoffset;
-        float accY_processed = (accY / accConstant) - accYoffset;
-        float accZ_processed = (accZ / accConstant) - accZoffset;
-
-        float gyroX_processed = (gyroX / gyroConstant) - gyroXoffset;
-        float gyroY_processed = (gyroY / gyroConstant) - gyroYoffset;
-        float gyroZ_processed = (gyroZ / gyroConstant) - gyroZoffset;
-
-        int signZ = (int) Math.signum(accZ_processed);
-
-        angleAccX = (float) Math.atan2(accY_processed, signZ * Math.sqrt(accZ_processed * accZ_processed + accX_processed * accX_processed) * 57.29578F);
-        angleAccY = (float) -Math.atan2(accX_processed, signZ * Math.sqrt(accZ_processed * accZ_processed + accY_processed * accY_processed) * 57.29578F);
-
-        float dt = (timeConstant - lastTimeConstant) * 0.001F;
-        lastTimeConstant = timeConstant;
-
-        angleX = (gyroCoefficientConstant*(angleX + gyroX_processed * dt)) + ((1.0F - gyroCoefficientConstant) * angleAccX);
-        angleY = (gyroCoefficientConstant*(angleY + gyroY_processed * dt)) + ((1.0F - gyroCoefficientConstant) * angleAccY);
-        angleZ += gyroZ_processed * dt;
+//        float accX = packet.getAccX();
+//        float accY = packet.getAccY();
+//        float accZ = packet.getAccZ();
+//        float gyroX = packet.getGyroX();
+//        float gyroY = packet.getGyroY();
+//        float gyroZ = packet.getGyroZ();
+//        float timeConstant = packet.getTimeConstant();
+//
+//        float accX_processed = (accX / accConstant) - accXoffset;
+//        float accY_processed = (accY / accConstant) - accYoffset;
+//        float accZ_processed = (accZ / accConstant) - accZoffset;
+//
+//        float gyroX_processed = (gyroX / gyroConstant) - gyroXoffset;
+//        float gyroY_processed = (gyroY / gyroConstant) - gyroYoffset;
+//        float gyroZ_processed = (gyroZ / gyroConstant) - gyroZoffset;
+//
+//        int signZ = (int) Math.signum(accZ_processed);
+//
+//        angleAccX = (float) Math.atan2(accY_processed, signZ * Math.sqrt(accZ_processed * accZ_processed + accX_processed * accX_processed) * 57.29578F);
+//        angleAccY = (float) -Math.atan2(accX_processed, signZ * Math.sqrt(accZ_processed * accZ_processed + accY_processed * accY_processed) * 57.29578F);
+//
+//        float dt = (timeConstant - lastTimeConstant) * 0.001F;
+//        lastTimeConstant = timeConstant;
+//
+//        angleX = (gyroCoefficientConstant*(angleX + gyroX_processed * dt)) + ((1.0F - gyroCoefficientConstant) * angleAccX);
+//        angleY = (gyroCoefficientConstant*(angleY + gyroY_processed * dt)) + ((1.0F - gyroCoefficientConstant) * angleAccY);
+//        angleZ += gyroZ_processed * dt;
     }
 }

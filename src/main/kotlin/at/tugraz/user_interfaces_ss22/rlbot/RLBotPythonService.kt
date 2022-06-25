@@ -1,10 +1,10 @@
 package at.tugraz.user_interfaces_ss22.rlbot
 
 import at.tugraz.user_interfaces_ss22.Service
+import at.tugraz.user_interfaces_ss22.mapping.GloveState
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import rlbot.Bot
-import rlbot.ControllerState
 import rlbot.manager.BotManager
 import rlbot.pyinterop.SocketServer
 import java.net.ServerSocket
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class RLBotPythonService(
     private val port: Int,
     refreshRate: Int,
-    private val gloveStateProvider: (Int) -> ControllerState,
+    private val gloveStateProvider: (Int) -> GloveState,
     private val botManager: BotManager = BotManager().apply { setRefreshRate(refreshRate) }
 ) : SocketServer(port, botManager), Service {
 
