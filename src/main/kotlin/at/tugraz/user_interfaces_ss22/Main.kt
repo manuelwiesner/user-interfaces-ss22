@@ -2,7 +2,6 @@ package at.tugraz.user_interfaces_ss22
 
 import at.tugraz.user_interfaces_ss22.glove.GloveControllerService
 import at.tugraz.user_interfaces_ss22.glove.FakeGloveController
-import at.tugraz.user_interfaces_ss22.mapping.GloveState
 import at.tugraz.user_interfaces_ss22.rlbot.RLBotFrameworkService
 import at.tugraz.user_interfaces_ss22.rlbot.RLBotPythonService
 
@@ -30,7 +29,8 @@ class Runner(
     override fun startService() {
         val gloveController = if (this.portGlove == -1) FakeGloveController() else GloveControllerService(this.portGlove)
         startService(gloveController)
-        val rlBotInterface = RLBotPythonService(this.portPython, this.refreshRate, { GloveState(gloveController) })
+
+        val rlBotInterface = RLBotPythonService(this.portPython, this.refreshRate, gloveController)
         startService(rlBotInterface)
 
         if (this.startFramework) {

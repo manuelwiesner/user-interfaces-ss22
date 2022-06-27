@@ -6,6 +6,7 @@ import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
 import com.github.kwhat.jnativehook.mouse.NativeMouseEvent
 import com.github.kwhat.jnativehook.mouse.NativeMouseListener
+import rlbot.flat.Rotator
 
 /** Keyboard and mouse input acting as glove input for testing the bot without the glove hardware. */
 class FakeGloveController : GloveController, BaseService() {
@@ -21,25 +22,26 @@ class FakeGloveController : GloveController, BaseService() {
     private val leftMouse = GloveMouseListener(NativeMouseEvent.BUTTON1)
     private val rightMouse = GloveMouseListener(NativeMouseEvent.BUTTON2)
 
-    private var packetId: Byte = 0
-
-    override val state: GlovePacket
-        // TODO: This controller is not up to date with the new angle calculations and will not work
-        get() = GlovePacket(
-            this.packetId++,
-            if (wKey.isDown) 4095 else 0, // getThrottle positive
-            if (leftMouse.isDown) 4095 else 0, // holdBoost
-            if (shiftKey.isDown) 4095 else 0, // holdHandbrake
-            0, // holdUseItem
-            if (sKey.isDown) 4095 else 0, // getThrottle negative
-            if (wKey.isDown) 0 else if (sKey.isDown) 4095 else 2048, // gyro x
-            if (aKey.isDown) 0 else if (dKey.isDown) 4095 else 2048, // gyro y
-            if (qKey.isDown) 0 else if (eKey.isDown) 4095 else 2048, // gyro z
-            if (rightMouse.isDown) 4095 else 0, // acc x
-            if (rightMouse.isDown) 4095 else 0, // acc y
-            if (rightMouse.isDown) 4095 else 0, // acc z
-            0,
+    override val state: GloveState
+        get() = GloveState(
+            if (dKey.isDown) 1f else if (aKey.isDown) -1f else 0f, // getSteer
+            if (wKey.isDown) 1f else if (sKey.isDown) -1f else 0f, // getThrottle
+            if (sKey.isDown) 1f else if (wKey.isDown) -1f else 0f, // getPitch
+            if (dKey.isDown) 1f else if (aKey.isDown) -1f else 0f, // getYaw
+            if (eKey.isDown) 1f else if (qKey.isDown) -1f else 0f, // getRoll
+            rightMouse.isDown, // holdJump
+            leftMouse.isDown, // holdBoost
+            shiftKey.isDown, // holdHandbrake
+            false, // holdUseItem
         )
+
+    override fun createCar(): GloveController {
+        return this
+    }
+
+    override fun updateCar(rotation: Rotator?): GloveController {
+        return this
+    }
 
     override fun startService() {
         GlobalScreen.registerNativeHook()

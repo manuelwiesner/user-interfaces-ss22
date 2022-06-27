@@ -1,7 +1,7 @@
 package at.tugraz.user_interfaces_ss22.rlbot
 
 import at.tugraz.user_interfaces_ss22.Service
-import at.tugraz.user_interfaces_ss22.mapping.GloveState
+import at.tugraz.user_interfaces_ss22.glove.GloveController
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import rlbot.Bot
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class RLBotPythonService(
     private val port: Int,
     refreshRate: Int,
-    private val gloveStateProvider: (Int) -> GloveState,
+    private val gloveController: GloveController,
     private val botManager: BotManager = BotManager().apply { setRefreshRate(refreshRate) }
 ) : SocketServer(port, botManager), Service {
 
@@ -62,7 +62,7 @@ class RLBotPythonService(
 
     override fun initBot(index: Int, botType: String?, team: Int): Bot {
         this.logger.info("Creating a new bot instance name=$botType, playerIndex=$index, team=$team")
-        return GloveBot(index, team, this.gloveStateProvider(index))
+        return GloveBot(index, team, this.gloveController.createCar())
     }
 
     override fun shutdown() {

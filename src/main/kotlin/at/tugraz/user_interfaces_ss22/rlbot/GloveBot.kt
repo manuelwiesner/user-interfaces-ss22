@@ -1,6 +1,6 @@
 package at.tugraz.user_interfaces_ss22.rlbot
 
-import at.tugraz.user_interfaces_ss22.mapping.GloveState
+import at.tugraz.user_interfaces_ss22.glove.GloveController
 import rlbot.BaseBot
 import rlbot.ControllerState
 import rlbot.flat.GameTickPacket
@@ -12,7 +12,7 @@ import rlbot.flat.Rotator
 class GloveBot(
     index: Int,
     team: Int,
-    private val gloveState: GloveState,
+    private val gloveController: GloveController,
 ) : BaseBot(index, team) {
 
     private val playerInfoTable: PlayerInfo = PlayerInfo()
@@ -23,6 +23,6 @@ class GloveBot(
         val playerInfo = request?.takeIf { it.playersLength() > this.index }?.players(this.playerInfoTable, this.index)
         val physics = playerInfo?.physics(this.physicsTable)
         val rotation = physics?.rotation(this.rotationTable)
-        return this.gloveState.update(rotation)
+        return this.gloveController.updateCar(rotation).state
     }
 }
