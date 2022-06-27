@@ -1,26 +1,23 @@
 package at.tugraz.user_interfaces_ss22.glove
 
+import at.tugraz.user_interfaces_ss22.mapping.PacketMapper
 import java.nio.ByteBuffer
-import kotlin.math.abs
-import kotlin.math.atan2
-import kotlin.math.sign
-import kotlin.math.sqrt
 
 /** Represents a 'packet' received from the Glove, lists the inputs from it. */
 data class GlovePacket(
-    val packetId: Byte,
-    val fingerOne: Short,
-    val fingerTwo: Short,
-    val fingerThree: Short,
-    val fingerFour: Short,
-    val fingerFive: Short,
-    val rawGyroX: Short,
-    val rawGyroY: Short,
-    val rawGyroZ: Short,
-    val rawAccX: Short,
-    val rawAccY: Short,
-    val rawAccZ: Short,
-    val timeConstant: Int,
+    val packetId: Byte = 0,
+    val fingerOne: Short = 0,
+    val fingerTwo: Short = 0,
+    val fingerThree: Short = 0,
+    val fingerFour: Short = 0,
+    val fingerFive: Short = 0,
+    val rawGyroX: Short = 0,
+    val rawGyroY: Short = 0,
+    val rawGyroZ: Short = 0,
+    val rawAccX: Short = 0,
+    val rawAccY: Short = 0,
+    val rawAccZ: Short = 0,
+    val timeConstant: Int = 0,
     val reservedS: Short = 0,
     val reservedB: Byte = 0,
 ) {
@@ -30,9 +27,6 @@ data class GlovePacket(
 
         /** Number of bytes a packet has and/or a buffer should have (magic byte + variable sizes + magic byte). */
         const val BYTES_PACKET_SIZE = 1 + 1 + 5 * 2 + 3 * 2 + 3 * 2 + 4 + 2 + 1 + 1
-
-        /** Empty state, the car will not move with these values. */
-        val EMPTY_PACKET = GlovePacket(0, 0, 0, 0, 0, 0, 2048, 2048, 2048, 0, 0, 0, 0)
 
         /** Constructs a packet from a byte array, checks the size and magic bytes to ensure valid data. */
         fun constructFromBytes(bytes: ByteArray): GlovePacket {
@@ -140,4 +134,16 @@ data class GlovePacket(
                 "roll=$rollOld" +
                 ")"
     }
+
+    fun getGyroX(offset: Float): Float = this.rawGyroX / PacketMapper.GYRO_CONSTANT - offset
+
+    fun getGyroY(offset: Float): Float = this.rawGyroY / PacketMapper.GYRO_CONSTANT - offset
+
+    fun getGyroZ(offset: Float): Float = this.rawGyroZ / PacketMapper.GYRO_CONSTANT - offset
+
+    fun getAccX(offset: Float): Float = this.rawAccX / PacketMapper.ACC_CONSTANT - offset
+
+    fun getAccY(offset: Float): Float = this.rawAccY / PacketMapper.ACC_CONSTANT - offset
+
+    fun getAccZ(offset: Float): Float = this.rawAccZ / PacketMapper.ACC_CONSTANT - offset
 }

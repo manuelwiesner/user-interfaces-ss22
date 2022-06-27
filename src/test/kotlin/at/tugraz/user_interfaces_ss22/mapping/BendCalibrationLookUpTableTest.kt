@@ -61,7 +61,7 @@ class BendCalibrationLookUpTableTest : CalibrationLookUpTableTest({ BendCalibrat
 
     override fun CalibrationLookUpTable.assertLUT(sampleData: List<Int>) {
         // input can't be negative
-        assertThrows<IndexOutOfBoundsException> { mapInput(GlovePacket.EMPTY_PACKET, -1) }
+        assertThrows<IndexOutOfBoundsException> { mapInput(GlovePacket(), -1) }
 
         // max read/generated sample
         val peakSample = sampleData.maxOrNull() ?: 0
@@ -69,7 +69,7 @@ class BendCalibrationLookUpTableTest : CalibrationLookUpTableTest({ BendCalibrat
 
         for (i in 0..maxData) {
             // get next mapping
-            val nextValue = mapInput(GlovePacket.EMPTY_PACKET, i.toShort())
+            val nextValue = mapInput(GlovePacket(), i.toShort())
             // if peak is reached we should only get the max value above that
             if (i >= peakSample) assertEquals(this@BendCalibrationLookUpTableTest.maxData, nextValue)
             // next value should probably be >= than the last?
@@ -78,6 +78,6 @@ class BendCalibrationLookUpTableTest : CalibrationLookUpTableTest({ BendCalibrat
         }
 
         // input can't be greater than max
-        assertThrows<IndexOutOfBoundsException> { mapInput(GlovePacket.EMPTY_PACKET, (maxData + 1).toShort()) }
+        assertThrows<IndexOutOfBoundsException> { mapInput(GlovePacket(), (maxData + 1).toShort()) }
     }
 }
